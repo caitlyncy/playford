@@ -1,20 +1,22 @@
 package com.example.camlynplayfordproject;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
-
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
-
 import com.example.camlynplayfordproject.databinding.ActivityMainBinding;
+//import com.example.camlynplayfordproject.ui.home.Article;
+//import com.example.camlynplayfordproject.ui.home.ArticleAdapter;
+//import com.example.camlynplayfordproject.ui.home.RssFeedParser;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-
     private ActivityMainBinding binding;
+    private RecyclerView recyclerView;
+    private ArticleAdapter articleAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,14 +26,27 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         BottomNavigationView navView = findViewById(R.id.nav_view);
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications)
                 .build();
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
-        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
-        NavigationUI.setupWithNavController(binding.navView, navController);
+
+        recyclerView = findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        new FetchArticlesTask().execute("https://www.lemonde.fr/rss/une.xml");
     }
 
+    private class FetchArticlesTask extends AsyncTask<String, Void, List<Article>> {
+        @Override
+        protected List<Article> doInBackground(String... urls) {
+            RssFeedParser parser = new RssFeedParser();
+            return parser.fetchAndParse(urls[0]);
+        }
+
+        @Override
+        protected void onPostExecute(List<Article> articles) {
+            articleAdapter = new ArticleAdapter(articles);
+            recyclerView.setAdapter(articleAdapter);
+        }
+    }
 }
