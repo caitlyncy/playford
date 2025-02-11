@@ -2,37 +2,34 @@ package com.example.camlynplayfordproject;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import com.example.camlynplayfordproject.ui.home.Article;
+import com.example.camlynplayfordproject.ui.home.ArticleAdapter;
+import com.example.camlynplayfordproject.ui.home.RssFeedParser;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import androidx.navigation.ui.AppBarConfiguration;
-import com.example.camlynplayfordproject.databinding.ActivityMainBinding;
-//import com.example.camlynplayfordproject.ui.home.Article;
-//import com.example.camlynplayfordproject.ui.home.ArticleAdapter;
-//import com.example.camlynplayfordproject.ui.home.RssFeedParser;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-    private ActivityMainBinding binding;
+
     private RecyclerView recyclerView;
     private ArticleAdapter articleAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
 
-        binding = ActivityMainBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
-
+        // Initialize BottomNavigationView
         BottomNavigationView navView = findViewById(R.id.nav_view);
-        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications)
-                .build();
+        // Add navigation setup here if necessary
 
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+        // Fetch articles and display RecyclerView
         new FetchArticlesTask().execute("https://www.lemonde.fr/rss/une.xml");
     }
 

@@ -1,4 +1,4 @@
-package com.example.camlynplayfordproject;
+package com.example.camlynplayfordproject.ui.home;
 
 import java.io.InputStream;
 import java.net.HttpURLConnection;
